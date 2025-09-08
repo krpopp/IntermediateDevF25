@@ -4,24 +4,17 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
 
-    public float speed;
+    public float minSpeed;
+    public float maxSpeed;
 
-    GameObject enemyObj;
+    public float acceleration;
 
-    string playerName = "Mario";
-
-    List<int> highScore;
-
-    double playerHealth;
-
-    bool gameOver = false;
-
-    char upKey = 'w';
+    float speed;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        speed = minSpeed;
     }
 
     // Update is called once per frame
@@ -43,6 +36,17 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             currentPos.x += speed * Time.deltaTime;
+        }
+        if (transform.position != currentPos)
+        {
+            if (speed < maxSpeed)
+            {
+                speed += acceleration;
+            }
+        }
+        else
+        {
+            speed = minSpeed;
         }
         transform.position = currentPos;
     }
