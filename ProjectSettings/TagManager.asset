@@ -11,6 +11,10 @@ TagManager:
   - flower
   - bumper
   - flipper
+  - wall
+  - gate
+  - ball
+  - restart
   layers:
   - Default
   - TransparentFX

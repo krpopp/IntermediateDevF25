@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PinballManager : MonoBehaviour
 {
@@ -7,7 +8,7 @@ public class PinballManager : MonoBehaviour
     TMP_Text scoreText; //refence to text component that shows the score
     //in order to access text mesh pro components, you must include "using TMPro" up at the top
 
-    int score = 100; //var to track score
+    int score = 0; //var to track score
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,7 +16,7 @@ public class PinballManager : MonoBehaviour
         //set the score text to the score
         //b/c score is an int, it must be translated to a string
         //you can add strings together
-        scoreText.text = "Score: " + score.ToString(); 
+        scoreText.text = "Score: " + score.ToString();
     }
 
     // Update is called once per frame
@@ -31,5 +32,19 @@ public class PinballManager : MonoBehaviour
         //add to score
         //do score effects maybe
         score++;
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("ball"))
+        {
+            RestartGame();
+        }
+    }
+
+    void RestartGame()
+    {
+        Debug.Log("in");
+        SceneManager.LoadScene("Week2");
     }
 }
