@@ -15,6 +15,7 @@ TagManager:
   - gate
   - ball
   - restart
+  - direction
   layers:
   - Default
   - TransparentFX

@@ -14,6 +14,9 @@ public class PinballBall : MonoBehaviour
 
     Vector2 lastVel;
 
+    [SerializeField]
+    PinballManager myManager;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -40,6 +43,16 @@ public class PinballBall : MonoBehaviour
             case "flipper":
                 myAudioSource.PlayOneShot(flipperClip);
                 break;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("direction"))
+        {
+            myManager.AddScore();
+            //Vector2 dirVec = new Vector2(collision.gameObject.transform.up.x, collision.gameObject.transform.up.y);
+            myBody.linearVelocity += (Vector2)collision.gameObject.transform.up * 20;
         }
     }
 

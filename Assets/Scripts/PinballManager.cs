@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PinballManager : MonoBehaviour
 {
@@ -9,9 +10,18 @@ public class PinballManager : MonoBehaviour
 
     int score = 0; //var to track score
 
+    [SerializeField]
+    GameObject ballObj;
+
+    Vector3 ballStartPos;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
+        ballStartPos = ballObj.transform.position;
+
+        score = PlayerPrefs.GetInt("Score");
         //set the score text to the score
         //b/c score is an int, it must be translated to a string
         //you can add strings together
@@ -30,6 +40,18 @@ public class PinballManager : MonoBehaviour
     {
         //add to score
         //do score effects maybe
-        score++;
+        score += 100;
+        scoreText.text = "Score: " + score.ToString();
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("ball"))
+        {
+            PlayerPrefs.SetInt("Score", score);
+            SceneManager.LoadScene("Week2");
+            //set the ball's position to its original position
+            //ballObj.transform.position = ballStartPos;
+        }
     }
 }
