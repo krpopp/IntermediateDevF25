@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class PinballManager : MonoBehaviour
 {
@@ -32,19 +31,5 @@ public class PinballManager : MonoBehaviour
         //add to score
         //do score effects maybe
         score++;
-    }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("ball"))
-        {
-            RestartGame();
-        }
-    }
-
-    void RestartGame()
-    {
-        Debug.Log("in");
-        SceneManager.LoadScene("Week2");
     }
 }
