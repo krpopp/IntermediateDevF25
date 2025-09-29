@@ -2,8 +2,8 @@
 
 ### This week's big idea: Unity Physics
 
-### [Week 3 agenda and slides](https://github.com/krpopp/IntermediateDevF25/wiki/Week-3)
+### [Week 4 agenda and slides](https://github.com/krpopp/IntermediateDevF25/wiki/Week-4)
 
-### Current homework: [Game 2: Pinball](https://github.com/krpopp/IntermediateDevF25/wiki/Game-2:-Pinball)
+### Current homework: [Game 3: Ecosystem](https://github.com/krpopp/IntermediateDevF25/wiki/Game-3:-Ecosystem)
 
 ### [Class wiki](https://github.com/krpopp/IntermediateDevF25/wiki)
