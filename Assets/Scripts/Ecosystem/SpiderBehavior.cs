@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 public class SpiderBehavior : MonoBehaviour
 {
-
-
-    [SerializeField]
-    Transform[] possibleTargets; //array of spots the spider can idle between
-
     [SerializeField]
     float lerpTimeMax; //appr. how long we want a lerp to last
 
@@ -23,6 +18,9 @@ public class SpiderBehavior : MonoBehaviour
 
     //count of current lerp progress
     float lerpTime;
+
+    [SerializeField]
+    GameObject web;
 
     //enum is like a custom variable type
     //we're using it to make states for our spider's behavior
@@ -39,8 +37,10 @@ public class SpiderBehavior : MonoBehaviour
 
     //timer that'll count down for hunger
     float hungerTime;
+    [SerializeField]
+    float hungerStart;
     //hunger stat
-    float hungerVal = 5;
+    float hungerVal;
 
     //list for food currently in the scene
     List<GameObject> allFood = new List<GameObject>();
@@ -54,7 +54,7 @@ public class SpiderBehavior : MonoBehaviour
 
     void Start()
     {
-        FindAllFood(); //find all food objs in the scene
+        hungerVal = hungerStart;
         hungerTime = hungerStep; //reset our hunger timer
     }
 
@@ -84,8 +84,7 @@ public class SpiderBehavior : MonoBehaviour
     {
         if (target == null)
         { //if we do not have a target to move to
-            int newTarget = Random.Range(0, possibleTargets.Length); //find random position
-            target = possibleTargets[newTarget]; //set target to that position
+            target = web.transform; //set our target to the web;
             startPos = transform.position; //set our starting pos to our current pos
             lerpTime = 0; //reset our lerp progress
         }
@@ -97,14 +96,13 @@ public class SpiderBehavior : MonoBehaviour
         if (hungerVal <= 0)
         { //if our spider is hunger
             target = null; //remove whatever target we were moving towards
-            //state = SpiderStates.eating; //switch the state to eating
+            state = SpiderStates.eating; //switch the state to eating
         }
-        //TO DO: find better thing to do while idle
-        //Need to make all behavior be intentional
     }
 
     void RunEat() {
         if(target == null){ //if we do not have a target to move to
+            FindAllFood(); //find all food objs in the scene
             target = FindNearest(allFood); //find the closest food obj and set our target to it
             startPos = transform.position; //set our starting pos to our current pos
             lerpTime = 0; //reset our lerp progress
@@ -152,6 +150,8 @@ public class SpiderBehavior : MonoBehaviour
         lerpTime += Time.deltaTime; //increase progress by delta time (time b/t frames)
         float percent = idleWalkCurve.Evaluate(lerpTime/lerpTimeMax); //from progress on curve
         Vector3 newPos = Vector3.LerpUnclamped(startPos, target.position, percent); //find current lerped position
+        Vector3 dir = (startPos - target.position).normalized;
+        transform.up = dir;
         return newPos; //return the new position
     }
 

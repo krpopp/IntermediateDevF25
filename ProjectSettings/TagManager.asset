@@ -16,6 +16,8 @@ TagManager:
   - ball
   - restart
   - direction
+  - food
+  - light
   layers:
   - Default
   - TransparentFX
