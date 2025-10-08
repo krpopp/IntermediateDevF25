@@ -2,21 +2,10 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
-public class RoachBehavior : MonoBehaviour
+public class RoachBehavior : InsectBehavior
 {
-
-
-    [SerializeField]
-    float lerpTimeMax; //appr. how long we want a lerp to last
-
-    [SerializeField]
-    float hungerStep; //max time we want to wait to deincrement hunger
-
-    Transform target = null; //current spot we're moving towards
-    Vector3 startPos = Vector3.zero; //current spot we're moving from
-
-    //count of current lerp progress
-    float lerpTime;
+    //our individual kinds of bugs all inherit from the InsectBehavior class
+    //this class contains all the variables and functions shared by insects
 
     [SerializeField]
     float speed;
@@ -33,38 +22,10 @@ public class RoachBehavior : MonoBehaviour
 
     //current state
     RoachStates state = RoachStates.idling;
-
-    //timer that'll count down for hunger
-    float hungerTime;
-    //hunger stat
-    [SerializeField]
-    float startHunger;
-    float hungerVal;
-
-    //list for food currently in the scene
-    List<GameObject> allFood = new List<GameObject>();
-
-    //holds which game object the roach has touched
-    GameObject touchingObj;
     bool inLight = false;
-
-    SpriteRenderer myRenderer;
-
-    //could use to display organism stats for debugging. should NOT be in the final game
-    // [SerializeField]
-    // TMP_Text hungerText;
-
-    void Start()
-    {
-        hungerVal = startHunger;
-        myRenderer = GetComponent<SpriteRenderer>();
-        FindAllFood(); //find all food objs in the scene
-        hungerTime = hungerStep; //reset our hunger timer
-    }
 
     void Update()
     {
-        //hungerText.text = hungerVal.ToString();
         //switch statement for our statement
         //cleaner way of checking the same condition
         switch (state)
@@ -92,6 +53,7 @@ public class RoachBehavior : MonoBehaviour
         if (hungerVal <= 0)
         { //if our roach is hunger
             target = null; //remove whatever target we were moving towards
+            GetComponent<SpriteRenderer>().flipY = false;
             state = RoachStates.eating; //switch the state to eating
         }
     }
@@ -128,49 +90,6 @@ public class RoachBehavior : MonoBehaviour
         if (!inLight) state = RoachStates.idling;
     }
 
-    void StepNeeds()
-    {
-        hungerTime -= Time.deltaTime; //deincrement the hunger timer
-        if (hungerTime <= 0)
-        { //if the hunger timer gets to 0
-            hungerVal--; //decrease our hunger stat
-            hungerTime = hungerStep; //reset the hunger timer
-        }
-    }
-
-    void FindAllFood()
-    {
-        allFood.Clear();
-        allFood.AddRange(GameObject.FindGameObjectsWithTag("food")); //find all objs tagged food and put them in a list
-    }
-
-    Transform FindNearest(List<GameObject> objsToFind)
-    {
-        float minDist = Mathf.Infinity; //setting the min dist to a big number
-        GameObject nearest = null; //tracks the obj closest to us
-        for (int i = 0; i < objsToFind.Count; i++)
-        { //loop through the objects we're checking
-            float dist = Vector3.Distance(transform.position, objsToFind[i].transform.position); //check the dist b/t the roach and the current obj
-            if (dist < minDist)
-            { //if the dist is less than our currently tracked min dist
-                minDist = dist; //set the min dist to the new dist
-                nearest = objsToFind[i]; //set the nearest obj var to this obj
-            }
-        }
-        return nearest.transform; //return the closest obj
-    }
-
-    Vector3 Move()
-    {
-        lerpTime += Time.deltaTime; //increase progress by delta time (time b/t frames)
-        float percent = lerpTime / lerpTimeMax; //from progress on curve
-        Vector3 newPos = Vector3.LerpUnclamped(startPos, target.position, percent); //find current lerped position
-        Vector3 dir = (startPos - target.position).normalized;
-        myRenderer.flipY = false;
-        transform.up = dir;
-        return newPos; //return the new position
-    }
-
     void OnTriggerEnter2D(Collider2D col)
     {
         if (!col.CompareTag("light")) touchingObj = col.gameObject; //if we touch something, set the var to whatever that thing is
@@ -190,7 +109,7 @@ public class RoachBehavior : MonoBehaviour
         Vector3 randDir = new Vector3(randX, randY);
         randDir.Normalize();
         transform.up = randDir;
-        myRenderer.flipY = true;
+        GetComponent<SpriteRenderer>().flipY = true;
         state = RoachStates.inLight;
     }
 

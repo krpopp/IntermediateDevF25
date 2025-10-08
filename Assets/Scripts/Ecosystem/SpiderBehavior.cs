@@ -2,25 +2,8 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 
-public class SpiderBehavior : MonoBehaviour
+public class SpiderBehavior : InsectBehavior
 {
-    [SerializeField]
-    float lerpTimeMax; //appr. how long we want a lerp to last
-
-    [SerializeField]
-    AnimationCurve idleWalkCurve; //anim curve to add easing to the lerp
-
-    [SerializeField]
-    float hungerStep; //max time we want to wait to deincrement hunger
-
-    Transform target = null; //current spot we're moving towards
-    Vector3 startPos = Vector3.zero; //current spot we're moving from
-
-    //count of current lerp progress
-    float lerpTime;
-
-    [SerializeField]
-    GameObject web;
 
     //enum is like a custom variable type
     //we're using it to make states for our spider's behavior
@@ -34,30 +17,7 @@ public class SpiderBehavior : MonoBehaviour
 
     //current state
     SpiderStates state = SpiderStates.idling;
-
-    //timer that'll count down for hunger
-    float hungerTime;
-    [SerializeField]
-    float hungerStart;
-    //hunger stat
-    float hungerVal;
-
-    //list for food currently in the scene
-    List<GameObject> allFood = new List<GameObject>();
-
-    //holds which game object the spider has touched
-    GameObject touchingObj;
-
-    //could use to display organism stats for debugging. should NOT be in the final game
-    // [SerializeField]
-    // TMP_Text hungerText;
-
-    void Start()
-    {
-        hungerVal = hungerStart;
-        hungerTime = hungerStep; //reset our hunger timer
-    }
-
+    
     void Update()
     {
         //hungerText.text = hungerVal.ToString();
@@ -84,7 +44,7 @@ public class SpiderBehavior : MonoBehaviour
     {
         if (target == null)
         { //if we do not have a target to move to
-            target = web.transform; //set our target to the web;
+            target = GameObject.Find("Web").transform; //set our target to a web in the scene;
             startPos = transform.position; //set our starting pos to our current pos
             lerpTime = 0; //reset our lerp progress
         }
@@ -121,47 +81,4 @@ public class SpiderBehavior : MonoBehaviour
         }
     }
 
-    void StepNeeds(){
-        hungerTime -= Time.deltaTime; //deincrement the hunger timer
-        if(hungerTime <= 0){ //if the hunger timer gets to 0
-            hungerVal--; //decrease our hunger stat
-            hungerTime = hungerStep; //reset the hunger timer
-        }
-    }
-
-    void FindAllFood(){
-        allFood.AddRange(GameObject.FindGameObjectsWithTag("food")); //find all objs tagged food and put them in a list
-    }
-
-    Transform FindNearest(List<GameObject> objsToFind){
-        float minDist = Mathf.Infinity; //setting the min dist to a big number
-        Transform nearest = null; //tracks the obj closest to us
-        for(int i = 0; i < objsToFind.Count; i++){ //loop through the objects we're checking
-            float dist = Vector3.Distance(transform.position, objsToFind[i].transform.position); //check the dist b/t the spider and the current obj
-            if(dist < minDist){ //if the dist is less than our currently tracked min dist
-                minDist = dist; //set the min dist to the new dist
-                nearest = objsToFind[i].transform; //set the nearest obj var to this obj
-            }
-        }
-        return nearest; //return the closest obj
-    }
-
-    Vector3 Move(){
-        lerpTime += Time.deltaTime; //increase progress by delta time (time b/t frames)
-        float percent = idleWalkCurve.Evaluate(lerpTime/lerpTimeMax); //from progress on curve
-        Vector3 newPos = Vector3.LerpUnclamped(startPos, target.position, percent); //find current lerped position
-        Vector3 dir = (startPos - target.position).normalized;
-        transform.up = dir;
-        return newPos; //return the new position
-    }
-
-    void OnTriggerEnter2D(Collider2D col){
-        if(col != null) touchingObj = col.gameObject; //if we touch something, set the var to whatever that thing is
-    }
-
-    void OnTriggerExit2D(Collider2D col){
-        if(col != null) { //if we stop touching something 
-            if(col.gameObject == touchingObj) touchingObj = null; //AND that thing is being tracked, clear the touching tracking var
-        }
-    }
 }
