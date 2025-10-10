@@ -8,7 +8,7 @@ public class InsectBehavior : MonoBehaviour
     public float lerpTimeMax; //appr. how long we want a lerp to last
 
     [SerializeField]
-    float hungerStep; //max time we want to wait to deincrement hunger
+    public float hungerStep; //max time we want to wait to deincrement hunger
 
     public Transform target = null; //current spot we're moving towards
     public Vector3 startPos = Vector3.zero; //current spot we're moving from
@@ -22,7 +22,7 @@ public class InsectBehavior : MonoBehaviour
     //timer that'll count down for hunger
     public float hungerTime;
     [SerializeField]
-    float hungerStart;
+    public float hungerStart;
     //hunger stat
     public float hungerVal;
 
@@ -31,11 +31,7 @@ public class InsectBehavior : MonoBehaviour
 
     //holds which game object the spider has touched
     public GameObject touchingObj;
-    void Start()
-    {
-        hungerVal = hungerStart;
-        hungerTime = hungerStep; //reset our hunger timer
-    }
+
 
     public void StepNeeds(){
         hungerTime -= Time.deltaTime; //deincrement the hunger timer

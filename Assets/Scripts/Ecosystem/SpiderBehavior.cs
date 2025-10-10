@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.AI;
 
 public class SpiderBehavior : InsectBehavior
 {
@@ -17,6 +18,16 @@ public class SpiderBehavior : InsectBehavior
 
     //current state
     SpiderStates state = SpiderStates.idling;
+
+    public NavMeshAgent agent;
+
+    void Start()
+    {
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
+        hungerVal = hungerStart;
+        hungerTime = hungerStep; //reset our hunger timer
+    }
     
     void Update()
     {
@@ -45,12 +56,13 @@ public class SpiderBehavior : InsectBehavior
         if (target == null)
         { //if we do not have a target to move to
             target = GameObject.Find("Web").transform; //set our target to a web in the scene;
-            startPos = transform.position; //set our starting pos to our current pos
-            lerpTime = 0; //reset our lerp progress
+            agent.SetDestination(target.position);
+            //startPos = transform.position; //set our starting pos to our current pos
+            //lerpTime = 0; //reset our lerp progress
         }
         else
         {
-            transform.position = Move(); //move to that position
+            //transform.position = Move(); //move to that position
         }
         StepNeeds(); //increment stat timers
         if (hungerVal <= 0)
